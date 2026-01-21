@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Speak It. Make It.
+
+A futuristic, voice-first task management and prototyping tool. Speak your ideas, and watch them materialize into interactive "Widget Stacks".
+
+## Features
+
+-   **Voice-First Interface**: Control the entire application using natural language commands.
+-   **Real-Time Visualization**: Watch your words transform into text and actions instantly as you speak.
+-   **Liquid Orb Hero**: A visually stunning, interactive hero element that responds to your presence.
+-   **Widget Stacks**: Organizes your tasks and ideas into floating, anti-gravity cards.
+-   **OLED Black Aesthetic**: A premium, dark-mode-first design system with glassmorphism and subtle gradients.
+-   **Groq Whisper Integration**: (Optional) High-fidelity transcription using the Groq API.
+-   **Web Speech API**: Real-time streaming transcription for instant feedback.
+
+## Tech Stack
+
+-   **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+-   **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+-   **Animations**: [Framer Motion](https://www.framer.com/motion/)
+-   **Icons**: [Lucide React](https://lucide.dev/)
+-   **Voice**: Web Speech API & Groq SDK
 
 ## Getting Started
 
-First, run the development server:
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/RahulBonala/Speak-it.-Make-it.git
+    cd speak-it-make-it
+    ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3.  (Optional) Set up Groq API Key:
+    -   Create a `.env.local` file in the root directory.
+    -   Add your key: `GROQ_API_KEY=your_key_here`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4.  Run the development server:
+    ```bash
+    npm run dev
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+5.  Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+-   `src/app`: Next.js App Router pages and layouts.
+-   `src/components`: Reusable UI components (Hero, Onboarding, Workspace).
+-   `src/lib`: Utility functions and types.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[MIT](LICENSE)
