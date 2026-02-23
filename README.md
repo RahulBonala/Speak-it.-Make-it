@@ -33,9 +33,9 @@ A futuristic, voice-first task management and prototyping tool. Speak your ideas
     npm install
     ```
 
-3.  (Optional) Set up Groq API Key:
-    -   Create a `.env.local` file in the root directory.
-    -   Add your key: `GROQ_API_KEY=your_key_here`
+3.  (Optional) Set up OpenAI API Key:
+    -   Copy `.env.local.example` to `.env.local`: `cp .env.local.example .env.local`
+    -   Add your key: `OPENAI_API_KEY=your_key_here`
 
 4.  Run the development server:
     ```bash

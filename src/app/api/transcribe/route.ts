@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import Groq from "groq-sdk";
 
 export async function POST(req: NextRequest) {
     try {
@@ -10,24 +9,33 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "No file provided" }, { status: 400 });
         }
 
-        const apiKey = process.env.GROQ_API_KEY;
+        const apiKey = process.env.OPENAI_API_KEY;
         if (!apiKey) {
-            // Return a mocked response for demo if key is missing
-            console.warn("GROQ_API_KEY not found. Returning mock response.");
-            return NextResponse.json({ text: "Demo Mode: Voice transcription requires a valid Groq API Key." });
+            console.warn("OPENAI_API_KEY not found. Returning mock response.");
+            return NextResponse.json({ text: "Demo Mode: Voice transcription requires a valid OpenAI API Key." });
         }
 
-        const groq = new Groq({ apiKey });
+        const openAiFormData = new FormData();
+        openAiFormData.append("file", file, file.name || "audio.webm");
+        openAiFormData.append("model", "whisper-1");
+        openAiFormData.append("response_format", "json");
 
-        const completion = await groq.audio.transcriptions.create({
-            file: file,
-            model: "whisper-large-v3",
-            response_format: "json",
-            language: "en",
-            temperature: 0.0,
+        const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${apiKey}`
+            },
+            body: openAiFormData,
         });
 
-        return NextResponse.json({ text: completion.text });
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("OpenAI Whisper Error:", errorText);
+            return NextResponse.json({ error: "Failed to transcribe audio with OpenAI" }, { status: response.status });
+        }
+
+        const data = await response.json();
+        return NextResponse.json({ text: data.text });
 
     } catch (error) {
         console.error("Transcription error:", error);
