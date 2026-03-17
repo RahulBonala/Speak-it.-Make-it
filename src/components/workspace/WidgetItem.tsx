@@ -6,47 +6,55 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 interface WidgetItemProps {
-    widget: Widget;
-    onToggle?: (id: string) => void;
+  widget: Widget;
+  onToggle?: (id: string) => void;
 }
 
 export function WidgetItem({ widget, onToggle }: WidgetItemProps) {
-    const Icon = {
-        note: StickyNote,
-        task: Circle,
-        reminder: Clock,
-        image: ImageIcon,
-    }[widget.type];
+  const Icon = {
+    note: StickyNote,
+    task: Circle,
+    reminder: Clock,
+    image: ImageIcon,
+  }[widget.type];
 
-    return (
-        <motion.div
-            layout
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={cn(
-                "flex items-start gap-3 p-3 text-sm rounded-lg transition-colors group",
-                widget.isCompleted ? "text-white/30 line-through bg-white/5" : "text-zinc-200 hover:bg-white/5"
-            )}
-        >
-            <button
-                onClick={() => onToggle?.(widget.id)}
-                className={cn(
-                    "mt-0.5 flex-shrink-0 transition-colors",
-                    widget.isCompleted ? "text-green-500" : "text-zinc-500 group-hover:text-zinc-300"
-                )}
+  return (
+    <motion.div
+      layout
+      onClick={() => onToggle?.(widget.id)}
+      className={cn(
+        "flex items-start gap-3 px-3 py-2.5 rounded-lg transition-colors cursor-pointer select-none",
+        widget.type === "task" ? "hover:bg-white/8 active:bg-white/12" : "hover:bg-white/5",
+        widget.isCompleted && "opacity-50"
+      )}
+    >
+      <div className="mt-0.5 shrink-0">
+        {widget.type === "task" ? (
+          widget.isCompleted ? (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center"
             >
-                {widget.type === "task" ? (
-                    widget.isCompleted ? (
-                        <Check className="w-4 h-4" />
-                    ) : (
-                        <Circle className="w-4 h-4" />
-                    )
-                ) : (
-                    <Icon className="w-4 h-4" />
-                )}
-            </button>
+              <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
+            </motion.div>
+          ) : (
+            <Circle className="w-4 h-4 text-zinc-500" />
+          )
+        ) : (
+          <Icon className="w-4 h-4 text-zinc-400" />
+        )}
+      </div>
 
-            <span className="leading-snug">{widget.content}</span>
-        </motion.div>
-    );
+      <span
+        className={cn(
+          "text-sm leading-relaxed",
+          widget.isCompleted ? "line-through text-zinc-500" : "text-zinc-200"
+        )}
+      >
+        {widget.content}
+      </span>
+    </motion.div>
+  );
 }

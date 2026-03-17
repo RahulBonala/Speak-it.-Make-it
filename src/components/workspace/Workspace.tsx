@@ -1,103 +1,178 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Stack } from "@/lib/types";
 import { WidgetStack } from "./WidgetStack";
 import { WorkspaceControls } from "./WorkspaceControls";
 import { VoiceInputModal } from "./VoiceInputModal";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Mock Data Generators
-const STACK_TITLES = ["Project Alpha", "Weekend Trip", "Groceries", "Ideas", "Gym Routine"];
-const WIDGET_CONTENT = ["Review PRs", "Buy milk", "Design mockups", "Call Mom", "Schedule dentist", "Update roadmap", "Book flights"];
+const STORAGE_KEY = "speak-it-stacks-v1";
+const COLORS = ["blue", "purple", "emerald", "rose", "orange"];
 
-const getRandom = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
+function genId() { return Math.random().toString(36).substr(2, 9); }
+
+function parseVoiceInput(text: string): { title: string; items: string[] } {
+  const lower = text.toLowerCase().trim();
+
+  if (lower.includes(" with ")) {
+    const parts = text.split(/ with /i);
+    const title = parts[0].trim();
+    const rest = parts.slice(1).join(" with ");
+    const items = rest.split(/,\s*|\s+and\s+/).map(i => i.trim()).filter(Boolean);
+    return { title, items };
+  }
+
+  if (/^(add|create)\s+/i.test(text)) {
+    const withoutPrefix = text.replace(/^(add|create)\s+/i, "");
+    if (withoutPrefix.includes(":")) {
+      const [title, rest] = withoutPrefix.split(":");
+      const items = rest.split(/,\s*|\s+and\s+/).map(i => i.trim()).filter(Boolean);
+      return { title: title.trim(), items };
+    }
+    return { title: withoutPrefix.trim(), items: [] };
+  }
+
+  return { title: text.trim(), items: [] };
+}
 
 export function Workspace() {
-    const [stacks, setStacks] = useState<Stack[]>([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [stacks, setStacks] = useState<Stack[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-    useEffect(() => {
-        // Add a welcome stack if empty
-        if (stacks.length === 0) {
-            setTimeout(() => {
-                setStacks([{
-                    id: "intro-stack",
-                    title: "Welcome to your Workspace",
-                    color: "blue",
-                    widgets: [
-                        { id: "w1", type: "note", content: "This is a Widget Stack.", isCompleted: false },
-                        { id: "w2", type: "task", content: "Tap the mic to add more.", isCompleted: false },
-                        { id: "w3", type: "reminder", content: "Try dragging me around (soon)", isCompleted: false },
-                    ]
-                }]);
-            }, 500);
-        }
-    }, []);
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        setStacks(JSON.parse(saved));
+      } else {
+        const now = Date.now();
+        setStacks([{
+          id: "intro-stack",
+          title: "Welcome to your Workspace",
+          color: "blue",
+          createdAt: now,
+          widgets: [
+            { id: "w1", type: "note", content: "This is a Widget Stack.", isCompleted: false, createdAt: now },
+            { id: "w2", type: "task", content: "Tap the mic to add a new stack.", isCompleted: false, createdAt: now },
+            { id: "w3", type: "task", content: "Click any task to complete it!", isCompleted: false, createdAt: now },
+            { id: "w4", type: "reminder", content: "Double-click the title to rename it.", isCompleted: false, createdAt: now },
+            { id: "w5", type: "task", content: "Press Space or M to open the mic.", isCompleted: false, createdAt: now },
+          ],
+        }]);
+      }
+    } catch { /* ignore */ }
+    setIsLoaded(true);
+  }, []);
 
-    const handleVoiceInput = (text: string) => {
-        // Simple parsing logic: "Title with item1, item2, and item3"
-        let title = "New Stack";
-        let items: string[] = [];
+  useEffect(() => {
+    if (!isLoaded) return;
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(stacks)); } catch { /* ignore */ }
+  }, [stacks, isLoaded]);
 
-        if (text.toLowerCase().includes(" with ")) {
-            const parts = text.split(/ with /i);
-            title = parts[0];
-            const itemsPart = parts[1];
-            // Split by comma or "and"
-            items = itemsPart.split(/, | and /).filter(i => i.trim().length > 0);
-        } else {
-            // Just a title or single item input
-            title = text;
-        }
-
-        const newStack: Stack = {
-            id: Math.random().toString(36).substr(2, 9),
-            title: title.charAt(0).toUpperCase() + title.slice(1),
-            color: ["blue", "purple", "emerald", "rose", "orange"][Math.floor(Math.random() * 5)],
-            widgets: items.length > 0 ? items.map(item => ({
-                id: Math.random().toString(36).substr(2, 9),
-                type: "task",
-                content: item.trim(),
-                isCompleted: false
-            })) : [{
-                id: Math.random().toString(36).substr(2, 9),
-                type: "note",
-                content: "Empty stack created from input",
-                isCompleted: false
-            }],
-        };
-
-        setStacks((prev) => [newStack, ...prev]);
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement).tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if ((e.key === " " || e.key === "m" || e.key === "M") && !isModalOpen) {
+        e.preventDefault();
+        setIsModalOpen(true);
+      }
+      if (e.key === "Escape") setIsModalOpen(false);
     };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [isModalOpen]);
 
-    return (
-        <div className="relative w-full h-full min-h-screen p-4 sm:p-8 pt-24 pb-32">
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[length:40px_40px] pointer-events-none" />
+  const handleVoiceInput = useCallback((text: string) => {
+    const { title, items } = parseVoiceInput(text);
+    const newStack: Stack = {
+      id: genId(),
+      title: title.charAt(0).toUpperCase() + title.slice(1),
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      createdAt: Date.now(),
+      widgets: items.length > 0
+        ? items.map(item => ({
+            id: genId(), type: "task" as const,
+            content: item.charAt(0).toUpperCase() + item.slice(1),
+            isCompleted: false, createdAt: Date.now(),
+          }))
+        : [{ id: genId(), type: "note" as const, content: "Stack created from voice.", isCompleted: false, createdAt: Date.now() }],
+    };
+    setStacks(prev => [newStack, ...prev]);
+  }, []);
 
-            {stacks.length === 0 ? (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-zinc-500 pointer-events-none">
-                    <p className="mb-4">Workspace Empty</p>
-                    <p className="text-sm opacity-50">Tap the microphone to create a stack</p>
-                </div>
-            ) : (
-                <div className="max-w-7xl mx-auto columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
-                    <AnimatePresence mode="popLayout">
-                        {stacks.map((stack, index) => (
-                            <div key={stack.id} className="break-inside-avoid">
-                                <WidgetStack stack={stack} index={index} />
-                            </div>
-                        ))}
-                    </AnimatePresence>
-                </div>
-            )}
+  const handleToggleWidget = useCallback((stackId: string, widgetId: string) => {
+    setStacks(prev => prev.map(s =>
+      s.id === stackId
+        ? { ...s, widgets: s.widgets.map(w => w.id === widgetId ? { ...w, isCompleted: !w.isCompleted } : w) }
+        : s
+    ));
+  }, []);
 
-            <WorkspaceControls onOpenVoiceInput={() => setIsModalOpen(true)} />
-            <VoiceInputModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onSubmit={handleVoiceInput}
-            />
+  const handleDeleteStack = useCallback((stackId: string) => {
+    setStacks(prev => prev.filter(s => s.id !== stackId));
+  }, []);
+
+  const handleAddWidget = useCallback((stackId: string, content: string) => {
+    setStacks(prev => prev.map(s =>
+      s.id === stackId
+        ? { ...s, widgets: [...s.widgets, { id: genId(), type: "task" as const, content, isCompleted: false, createdAt: Date.now() }] }
+        : s
+    ));
+  }, []);
+
+  const handleRenameStack = useCallback((stackId: string, title: string) => {
+    setStacks(prev => prev.map(s => s.id === stackId ? { ...s, title } : s));
+  }, []);
+
+  return (
+    <div className="relative min-h-screen pb-36">
+      {/* Background grid */}
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-950 to-black pointer-events-none" />
+
+      {stacks.length === 0 ? (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
+          <motion.h2
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-2xl font-bold text-white"
+          >
+            Workspace empty
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            className="text-zinc-500 text-sm"
+          >
+            Press Space or tap the mic to create a stack
+          </motion.p>
         </div>
-    );
+      ) : (
+        <div className="relative p-6 pt-8">
+          <AnimatePresence mode="popLayout">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {stacks.map((stack, index) => (
+                <motion.div key={stack.id} layout>
+                  <WidgetStack
+                    stack={stack}
+                    index={index}
+                    onToggleWidget={handleToggleWidget}
+                    onDeleteStack={handleDeleteStack}
+                    onAddWidget={handleAddWidget}
+                    onRenameStack={handleRenameStack}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </AnimatePresence>
+        </div>
+      )}
+
+      <WorkspaceControls onOpenVoiceInput={() => setIsModalOpen(true)} />
+      <VoiceInputModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleVoiceInput} />
+    </div>
+  );
 }

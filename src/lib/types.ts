@@ -1,16 +1,18 @@
 export type WidgetType = "note" | "task" | "reminder" | "image";
 
 export interface Widget {
-    id: string;
-    type: WidgetType;
-    content: string;
-    isCompleted?: boolean;
+  id: string;
+  type: WidgetType;
+  content: string;
+  isCompleted?: boolean;
+  createdAt: number;
 }
 
 export interface Stack {
-    id: string;
-    title: string;
-    widgets: Widget[];
-    color: string; // Tailwind color class prefix e.g. "blue"
-    position?: { x: number; y: number }; // For floating layout
+  id: string;
+  title: string;
+  widgets: Widget[];
+  color: string;
+  position?: { x: number; y: number };
+  createdAt: number;
 }
