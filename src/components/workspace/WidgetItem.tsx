@@ -10,25 +10,36 @@ interface WidgetItemProps {
   onToggle?: (id: string) => void;
 }
 
+const iconMap = {
+  note: StickyNote,
+  task: Circle,
+  reminder: Clock,
+  image: ImageIcon,
+} as const;
+
 export function WidgetItem({ widget, onToggle }: WidgetItemProps) {
-  const Icon = {
-    note: StickyNote,
-    task: Circle,
-    reminder: Clock,
-    image: ImageIcon,
-  }[widget.type];
+  const Icon = iconMap[widget.type];
 
   return (
     <motion.div
       layout
+      role={widget.type === "task" ? "checkbox" : undefined}
+      aria-checked={widget.type === "task" ? widget.isCompleted : undefined}
+      tabIndex={0}
       onClick={() => onToggle?.(widget.id)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onToggle?.(widget.id);
+        }
+      }}
       className={cn(
         "flex items-start gap-3 px-3 py-2.5 rounded-lg transition-colors cursor-pointer select-none",
         widget.type === "task" ? "hover:bg-white/8 active:bg-white/12" : "hover:bg-white/5",
-        widget.isCompleted && "opacity-50"
+        widget.isCompleted && "opacity-50",
       )}
     >
-      <div className="mt-0.5 shrink-0">
+      <div className="mt-0.5 shrink-0" aria-hidden="true">
         {widget.type === "task" ? (
           widget.isCompleted ? (
             <motion.div
@@ -50,7 +61,7 @@ export function WidgetItem({ widget, onToggle }: WidgetItemProps) {
       <span
         className={cn(
           "text-sm leading-relaxed",
-          widget.isCompleted ? "line-through text-zinc-500" : "text-zinc-200"
+          widget.isCompleted ? "line-through text-zinc-500" : "text-zinc-200",
         )}
       >
         {widget.content}

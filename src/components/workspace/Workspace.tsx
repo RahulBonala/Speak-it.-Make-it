@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useSyncExternalStore } from "react";
 import { Stack } from "@/lib/types";
 import { WidgetStack } from "./WidgetStack";
 import { WorkspaceControls } from "./WorkspaceControls";
@@ -10,7 +10,39 @@ import { motion, AnimatePresence } from "framer-motion";
 const STORAGE_KEY = "speak-it-stacks-v1";
 const COLORS = ["blue", "purple", "emerald", "rose", "orange"];
 
-function genId() { return Math.random().toString(36).substr(2, 9); }
+function genId() {
+  return Math.random().toString(36).substr(2, 9);
+}
+
+function getDefaultStacks(): Stack[] {
+  const now = Date.now();
+  return [
+    {
+      id: "intro-stack",
+      title: "Welcome to your Workspace",
+      color: "blue",
+      createdAt: now,
+      widgets: [
+        { id: "w1", type: "note", content: "This is a Widget Stack.", isCompleted: false, createdAt: now },
+        { id: "w2", type: "task", content: "Tap the mic to add a new stack.", isCompleted: false, createdAt: now },
+        { id: "w3", type: "task", content: "Click any task to complete it!", isCompleted: false, createdAt: now },
+        { id: "w4", type: "reminder", content: "Double-click the title to rename it.", isCompleted: false, createdAt: now },
+        { id: "w5", type: "task", content: "Press Space or M to open the mic.", isCompleted: false, createdAt: now },
+      ],
+    },
+  ];
+}
+
+function loadStacks(): Stack[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved) as Stack[];
+  } catch {
+    /* corrupt data */
+  }
+  return getDefaultStacks();
+}
 
 function parseVoiceInput(text: string): { title: string; items: string[] } {
   const lower = text.toLowerCase().trim();
@@ -19,7 +51,10 @@ function parseVoiceInput(text: string): { title: string; items: string[] } {
     const parts = text.split(/ with /i);
     const title = parts[0].trim();
     const rest = parts.slice(1).join(" with ");
-    const items = rest.split(/,\s*|\s+and\s+/).map(i => i.trim()).filter(Boolean);
+    const items = rest
+      .split(/,\s*|\s+and\s+/)
+      .map((i) => i.trim())
+      .filter(Boolean);
     return { title, items };
   }
 
@@ -27,7 +62,10 @@ function parseVoiceInput(text: string): { title: string; items: string[] } {
     const withoutPrefix = text.replace(/^(add|create)\s+/i, "");
     if (withoutPrefix.includes(":")) {
       const [title, rest] = withoutPrefix.split(":");
-      const items = rest.split(/,\s*|\s+and\s+/).map(i => i.trim()).filter(Boolean);
+      const items = rest
+        .split(/,\s*|\s+and\s+/)
+        .map((i) => i.trim())
+        .filter(Boolean);
       return { title: title.trim(), items };
     }
     return { title: withoutPrefix.trim(), items: [] };
@@ -36,40 +74,23 @@ function parseVoiceInput(text: string): { title: string; items: string[] } {
   return { title: text.trim(), items: [] };
 }
 
+function subscribe(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
 export function Workspace() {
-  const [stacks, setStacks] = useState<Stack[]>([]);
+  const initialStacks = useSyncExternalStore(subscribe, loadStacks, () => []);
+  const [stacks, setStacks] = useState<Stack[]>(initialStacks);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        setStacks(JSON.parse(saved));
-      } else {
-        const now = Date.now();
-        setStacks([{
-          id: "intro-stack",
-          title: "Welcome to your Workspace",
-          color: "blue",
-          createdAt: now,
-          widgets: [
-            { id: "w1", type: "note", content: "This is a Widget Stack.", isCompleted: false, createdAt: now },
-            { id: "w2", type: "task", content: "Tap the mic to add a new stack.", isCompleted: false, createdAt: now },
-            { id: "w3", type: "task", content: "Click any task to complete it!", isCompleted: false, createdAt: now },
-            { id: "w4", type: "reminder", content: "Double-click the title to rename it.", isCompleted: false, createdAt: now },
-            { id: "w5", type: "task", content: "Press Space or M to open the mic.", isCompleted: false, createdAt: now },
-          ],
-        }]);
-      }
-    } catch { /* ignore */ }
-    setIsLoaded(true);
-  }, []);
-
-  useEffect(() => {
-    if (!isLoaded) return;
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(stacks)); } catch { /* ignore */ }
-  }, [stacks, isLoaded]);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stacks));
+    } catch {
+      /* quota exceeded */
+    }
+  }, [stacks]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -92,45 +113,79 @@ export function Workspace() {
       title: title.charAt(0).toUpperCase() + title.slice(1),
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
       createdAt: Date.now(),
-      widgets: items.length > 0
-        ? items.map(item => ({
-            id: genId(), type: "task" as const,
-            content: item.charAt(0).toUpperCase() + item.slice(1),
-            isCompleted: false, createdAt: Date.now(),
-          }))
-        : [{ id: genId(), type: "note" as const, content: "Stack created from voice.", isCompleted: false, createdAt: Date.now() }],
+      widgets:
+        items.length > 0
+          ? items.map((item) => ({
+              id: genId(),
+              type: "task" as const,
+              content: item.charAt(0).toUpperCase() + item.slice(1),
+              isCompleted: false,
+              createdAt: Date.now(),
+            }))
+          : [
+              {
+                id: genId(),
+                type: "note" as const,
+                content: "Stack created from voice.",
+                isCompleted: false,
+                createdAt: Date.now(),
+              },
+            ],
     };
-    setStacks(prev => [newStack, ...prev]);
+    setStacks((prev) => [newStack, ...prev]);
   }, []);
 
   const handleToggleWidget = useCallback((stackId: string, widgetId: string) => {
-    setStacks(prev => prev.map(s =>
-      s.id === stackId
-        ? { ...s, widgets: s.widgets.map(w => w.id === widgetId ? { ...w, isCompleted: !w.isCompleted } : w) }
-        : s
-    ));
+    setStacks((prev) =>
+      prev.map((s) =>
+        s.id === stackId
+          ? {
+              ...s,
+              widgets: s.widgets.map((w) =>
+                w.id === widgetId ? { ...w, isCompleted: !w.isCompleted } : w,
+              ),
+            }
+          : s,
+      ),
+    );
   }, []);
 
   const handleDeleteStack = useCallback((stackId: string) => {
-    setStacks(prev => prev.filter(s => s.id !== stackId));
+    setStacks((prev) => prev.filter((s) => s.id !== stackId));
   }, []);
 
   const handleAddWidget = useCallback((stackId: string, content: string) => {
-    setStacks(prev => prev.map(s =>
-      s.id === stackId
-        ? { ...s, widgets: [...s.widgets, { id: genId(), type: "task" as const, content, isCompleted: false, createdAt: Date.now() }] }
-        : s
-    ));
+    setStacks((prev) =>
+      prev.map((s) =>
+        s.id === stackId
+          ? {
+              ...s,
+              widgets: [
+                ...s.widgets,
+                {
+                  id: genId(),
+                  type: "task" as const,
+                  content,
+                  isCompleted: false,
+                  createdAt: Date.now(),
+                },
+              ],
+            }
+          : s,
+      ),
+    );
   }, []);
 
   const handleRenameStack = useCallback((stackId: string, title: string) => {
-    setStacks(prev => prev.map(s => s.id === stackId ? { ...s, title } : s));
+    setStacks((prev) => prev.map((s) => (s.id === stackId ? { ...s, title } : s)));
   }, []);
 
   return (
     <div className="relative min-h-screen pb-36">
-      {/* Background grid */}
-      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-950 to-black pointer-events-none" />
+      <div
+        className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-950 to-black pointer-events-none"
+        aria-hidden="true"
+      />
 
       {stacks.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
@@ -172,7 +227,11 @@ export function Workspace() {
       )}
 
       <WorkspaceControls onOpenVoiceInput={() => setIsModalOpen(true)} />
-      <VoiceInputModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleVoiceInput} />
+      <VoiceInputModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleVoiceInput}
+      />
     </div>
   );
 }
