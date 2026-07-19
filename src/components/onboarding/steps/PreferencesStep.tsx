@@ -61,7 +61,7 @@ export function PreferencesStep({ onComplete }: PreferencesStepProps) {
 
       <button
         onClick={onComplete}
-        className="bg-brand-strong hover:bg-brand w-full rounded-xl py-4 font-bold text-white transition-all active:scale-95"
+        className="bg-brand-strong hover:bg-brand-deep w-full rounded-xl py-4 font-bold text-white transition-all active:scale-95"
       >
         Finish Setup
       </button>

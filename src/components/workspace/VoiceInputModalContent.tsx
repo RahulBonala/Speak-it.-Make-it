@@ -224,7 +224,7 @@ export function VoiceInputModalContent({ onClose, onSubmit }: VoiceInputModalCon
             <button
               onClick={handleStopAndSubmit}
               disabled={!transcript.trim()}
-              className="from-brand to-brand-strong relative flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r py-2.5 text-sm font-medium text-white transition-all disabled:cursor-not-allowed disabled:opacity-40"
+              className="from-brand-strong to-brand-deep relative flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r py-2.5 text-sm font-medium text-white transition-all disabled:cursor-not-allowed disabled:opacity-40"
             >
               <Check className="h-4 w-4" aria-hidden="true" />
               Create Stack

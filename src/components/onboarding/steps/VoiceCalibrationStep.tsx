@@ -132,7 +132,7 @@ export function VoiceCalibrationStep({ onNext }: VoiceCalibrationStepProps) {
           className={`relative z-10 flex h-24 w-24 items-center justify-center rounded-full transition-all duration-300 ${
             isListening
               ? "scale-95 cursor-default bg-zinc-800"
-              : "bg-brand-strong hover:bg-brand shadow-[0_0_30px_rgba(255,107,26,0.5)] hover:scale-105"
+              : "bg-brand-strong hover:bg-brand-deep shadow-[0_0_30px_rgba(255,107,26,0.5)] hover:scale-105"
           }`}
         >
           {effectiveProgress >= 100 ? (

@@ -59,7 +59,7 @@ export function HeroSection({ onStart }: HeroSectionProps) {
         <div className="flex flex-col gap-4 sm:flex-row">
           <button
             onClick={onStart}
-            className="group bg-brand-strong shadow-brand/40 hover:bg-brand relative flex items-center justify-center gap-2 rounded-full px-8 py-4 text-white shadow-lg transition-all hover:scale-105 active:scale-95"
+            className="group bg-brand-strong shadow-brand/40 hover:bg-brand-deep relative flex items-center justify-center gap-2 rounded-full px-8 py-4 text-white shadow-lg transition-all hover:scale-105 active:scale-95"
           >
             <Mic className="h-5 w-5 group-hover:animate-pulse" aria-hidden="true" />
             <span className="font-semibold">Start Speaking</span>

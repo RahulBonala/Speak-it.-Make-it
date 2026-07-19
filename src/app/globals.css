@@ -13,6 +13,8 @@
   --color-accent-primary: #ff6b1a; /* Signature orange for the orb/interaction */
   --color-brand: #ff6b1a; /* signature orange (Rahul Orange) */
   --color-brand-strong: #c2410c; /* deep orange: AA with white text */
+  --color-brand-deep: #9a3412; /* hover for white-on-strong fills */
+  --color-brand-soft: rgba(255, 107, 26, 0.12); /* faded wash */
 }
 
 :root {

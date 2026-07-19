@@ -31,7 +31,7 @@ export function WorkspaceControls({ onOpenVoiceInput }: WorkspaceControlsProps) 
         <button
           onClick={onOpenVoiceInput}
           aria-label="Open voice input"
-          className="from-brand to-brand-strong shadow-brand/30 hover:shadow-brand/50 relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br shadow-lg transition-shadow"
+          className="from-brand-strong to-brand-deep shadow-brand/30 hover:shadow-brand/50 relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br shadow-lg transition-shadow"
         >
           <Mic className="h-6 w-6 text-white" aria-hidden="true" />
         </button>
