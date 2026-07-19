@@ -34,7 +34,7 @@ export function WidgetItem({ widget, onToggle }: WidgetItemProps) {
         }
       }}
       className={cn(
-        "flex items-start gap-3 px-3 py-2.5 rounded-lg transition-colors cursor-pointer select-none",
+        "flex cursor-pointer items-start gap-3 rounded-lg px-3 py-2.5 transition-colors select-none",
         widget.type === "task" ? "hover:bg-white/8 active:bg-white/12" : "hover:bg-white/5",
         widget.isCompleted && "opacity-50",
       )}
@@ -46,22 +46,22 @@ export function WidgetItem({ widget, onToggle }: WidgetItemProps) {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
-              className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center"
+              className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500"
             >
-              <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
+              <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />
             </motion.div>
           ) : (
-            <Circle className="w-4 h-4 text-zinc-500" />
+            <Circle className="h-4 w-4 text-zinc-500" />
           )
         ) : (
-          <Icon className="w-4 h-4 text-zinc-400" />
+          <Icon className="h-4 w-4 text-zinc-400" />
         )}
       </div>
 
       <span
         className={cn(
           "text-sm leading-relaxed",
-          widget.isCompleted ? "line-through text-zinc-500" : "text-zinc-200",
+          widget.isCompleted ? "text-zinc-500 line-through" : "text-zinc-200",
         )}
       >
         {widget.content}

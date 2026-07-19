@@ -11,7 +11,7 @@ export function LiquidOrb({ className }: LiquidOrbProps) {
   return (
     <div className={cn("relative flex items-center justify-center", className)} aria-hidden="true">
       <motion.div
-        className="absolute w-64 h-64 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-3xl opacity-60"
+        className="from-brand to-brand-strong absolute h-64 w-64 rounded-full bg-gradient-to-r opacity-60 blur-3xl"
         animate={{
           scale: [1, 1.2, 0.9, 1.1, 1],
           rotate: [0, 90, 180, 270, 360],
@@ -25,7 +25,7 @@ export function LiquidOrb({ className }: LiquidOrbProps) {
       />
 
       <motion.div
-        className="relative w-48 h-48 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 rounded-full shadow-[0_0_40px_rgba(59,130,246,0.5)]"
+        className="from-brand via-brand to-brand-strong relative h-48 w-48 rounded-full bg-gradient-to-br shadow-[0_0_40px_rgba(255,107,26,0.5)]"
         animate={{
           borderRadius: [
             "60% 40% 30% 70% / 60% 30% 70% 40%",
@@ -43,7 +43,7 @@ export function LiquidOrb({ className }: LiquidOrbProps) {
       </motion.div>
 
       <motion.div
-        className="absolute w-2 h-2 bg-blue-400 rounded-full blur-sm"
+        className="bg-brand absolute h-2 w-2 rounded-full blur-sm"
         animate={{
           y: [-20, 20, -20],
           x: [-20, 20, -20],

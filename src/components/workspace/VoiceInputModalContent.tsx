@@ -48,8 +48,8 @@ export function VoiceInputModalContent({ onClose, onSubmit }: VoiceInputModalCon
             const barHeight = (val / 255) * canvas.height;
             const x = i * barWidth;
             const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
-            gradient.addColorStop(0, "rgba(59,130,246,0.8)");
-            gradient.addColorStop(1, "rgba(147,51,234,0.8)");
+            gradient.addColorStop(0, "rgba(255,107,26,0.8)");
+            gradient.addColorStop(1, "rgba(194,65,12,0.8)");
             ctx.fillStyle = gradient;
             ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);
           });
@@ -84,8 +84,7 @@ export function VoiceInputModalContent({ onClose, onSubmit }: VoiceInputModalCon
       return;
     }
 
-    const SpeechRecognitionCtor =
-      window.SpeechRecognition ?? window.webkitSpeechRecognition;
+    const SpeechRecognitionCtor = window.SpeechRecognition ?? window.webkitSpeechRecognition;
     recognition = new SpeechRecognitionCtor();
     recognition.continuous = true;
     recognition.interimResults = true;
@@ -141,7 +140,7 @@ export function VoiceInputModalContent({ onClose, onSubmit }: VoiceInputModalCon
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center"
       role="dialog"
       aria-modal="true"
       aria-label="Voice input"
@@ -157,19 +156,19 @@ export function VoiceInputModalContent({ onClose, onSubmit }: VoiceInputModalCon
         animate={{ y: 0, opacity: 1, scale: 1 }}
         exit={{ y: 40, opacity: 0, scale: 0.97 }}
         transition={{ type: "spring", stiffness: 400, damping: 35 }}
-        className="relative w-full max-w-md bg-zinc-900 border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col gap-5"
+        className="relative flex w-full max-w-md flex-col gap-5 rounded-2xl border border-white/10 bg-zinc-900 p-6 shadow-2xl"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Mic className="w-4 h-4 text-blue-400" aria-hidden="true" />
+            <Mic className="text-brand h-4 w-4" aria-hidden="true" />
             <span className="text-sm font-semibold text-white">Voice Input</span>
           </div>
           <button
             onClick={onClose}
-            className="text-zinc-500 hover:text-white transition-colors"
+            className="text-zinc-500 transition-colors hover:text-white"
             aria-label="Close voice input"
           >
-            <X className="w-4 h-4" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
@@ -181,13 +180,13 @@ export function VoiceInputModalContent({ onClose, onSubmit }: VoiceInputModalCon
           aria-hidden="true"
         />
 
-        <div className="min-h-[64px] bg-white/5 rounded-xl px-4 py-3 border border-white/8">
+        <div className="min-h-[64px] rounded-xl border border-white/8 bg-white/5 px-4 py-3">
           {transcript ? (
             <motion.p
               key={transcript}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-sm text-white leading-relaxed"
+              className="text-sm leading-relaxed text-white"
             >
               &ldquo;{transcript}&rdquo;
             </motion.p>
@@ -202,14 +201,14 @@ export function VoiceInputModalContent({ onClose, onSubmit }: VoiceInputModalCon
           )}
         </div>
 
-        <p className="text-xs text-zinc-600 text-center">
+        <p className="text-center text-xs text-zinc-600">
           Try: &ldquo;Shopping list with milk, eggs, and bread&rdquo;
         </p>
 
         <div className="flex items-center gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-400 text-sm font-medium transition-colors"
+            className="flex-1 rounded-xl bg-white/5 py-2.5 text-sm font-medium text-zinc-400 transition-colors hover:bg-white/10"
           >
             Cancel
           </button>
@@ -217,7 +216,7 @@ export function VoiceInputModalContent({ onClose, onSubmit }: VoiceInputModalCon
           <div className="relative flex-1">
             {isListening && (
               <motion.div
-                className="absolute inset-0 rounded-xl bg-blue-500/30"
+                className="bg-brand/30 absolute inset-0 rounded-xl"
                 animate={{ scale: [1, 1.05, 1], opacity: [0.5, 0, 0.5] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               />
@@ -225,9 +224,9 @@ export function VoiceInputModalContent({ onClose, onSubmit }: VoiceInputModalCon
             <button
               onClick={handleStopAndSubmit}
               disabled={!transcript.trim()}
-              className="relative w-full py-2.5 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="from-brand to-brand-strong relative flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r py-2.5 text-sm font-medium text-white transition-all disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <Check className="w-4 h-4" aria-hidden="true" />
+              <Check className="h-4 w-4" aria-hidden="true" />
               Create Stack
             </button>
           </div>

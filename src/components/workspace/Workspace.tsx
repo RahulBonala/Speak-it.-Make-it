@@ -23,11 +23,41 @@ function getDefaultStacks(): Stack[] {
       color: "blue",
       createdAt: now,
       widgets: [
-        { id: "w1", type: "note", content: "This is a Widget Stack.", isCompleted: false, createdAt: now },
-        { id: "w2", type: "task", content: "Tap the mic to add a new stack.", isCompleted: false, createdAt: now },
-        { id: "w3", type: "task", content: "Click any task to complete it!", isCompleted: false, createdAt: now },
-        { id: "w4", type: "reminder", content: "Double-click the title to rename it.", isCompleted: false, createdAt: now },
-        { id: "w5", type: "task", content: "Press Space or M to open the mic.", isCompleted: false, createdAt: now },
+        {
+          id: "w1",
+          type: "note",
+          content: "This is a Widget Stack.",
+          isCompleted: false,
+          createdAt: now,
+        },
+        {
+          id: "w2",
+          type: "task",
+          content: "Tap the mic to add a new stack.",
+          isCompleted: false,
+          createdAt: now,
+        },
+        {
+          id: "w3",
+          type: "task",
+          content: "Click any task to complete it!",
+          isCompleted: false,
+          createdAt: now,
+        },
+        {
+          id: "w4",
+          type: "reminder",
+          content: "Double-click the title to rename it.",
+          isCompleted: false,
+          createdAt: now,
+        },
+        {
+          id: "w5",
+          type: "task",
+          content: "Press Space or M to open the mic.",
+          isCompleted: false,
+          createdAt: now,
+        },
       ],
     },
   ];
@@ -183,12 +213,12 @@ export function Workspace() {
   return (
     <div className="relative min-h-screen pb-36">
       <div
-        className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-950 to-black pointer-events-none"
+        className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-950 to-black"
         aria-hidden="true"
       />
 
       {stacks.length === 0 ? (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
+        <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3">
           <motion.h2
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -200,7 +230,7 @@ export function Workspace() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="text-zinc-500 text-sm"
+            className="text-sm text-zinc-500"
           >
             Press Space or tap the mic to create a stack
           </motion.p>
@@ -208,7 +238,7 @@ export function Workspace() {
       ) : (
         <div className="relative p-6 pt-8">
           <AnimatePresence mode="popLayout">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {stacks.map((stack, index) => (
                 <motion.div key={stack.id} layout>
                   <WidgetStack

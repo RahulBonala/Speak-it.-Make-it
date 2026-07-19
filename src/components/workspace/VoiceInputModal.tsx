@@ -12,13 +12,7 @@ interface VoiceInputModalProps {
 export function VoiceInputModal({ isOpen, onClose, onSubmit }: VoiceInputModalProps) {
   return (
     <AnimatePresence>
-      {isOpen && (
-        <VoiceInputModalContent
-          key="voice-modal"
-          onClose={onClose}
-          onSubmit={onSubmit}
-        />
-      )}
+      {isOpen && <VoiceInputModalContent key="voice-modal" onClose={onClose} onSubmit={onSubmit} />}
     </AnimatePresence>
   );
 }

@@ -11,14 +11,10 @@ export default function Home() {
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between bg-black text-white selection:bg-blue-500/30 overflow-hidden">
+    <main className="selection:bg-brand/30 flex min-h-screen flex-col items-center justify-between overflow-hidden bg-black text-white">
       <AnimatePresence mode="wait">
         {!hasStarted && (
-          <motion.div
-            key="hero"
-            exit={{ opacity: 0, y: -50 }}
-            className="w-full"
-          >
+          <motion.div key="hero" exit={{ opacity: 0, y: -50 }} className="w-full">
             <HeroSection onStart={() => setHasStarted(true)} />
           </motion.div>
         )}
@@ -40,7 +36,7 @@ export default function Home() {
             key="app"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="w-full min-h-screen"
+            className="min-h-screen w-full"
           >
             <Workspace />
           </motion.div>

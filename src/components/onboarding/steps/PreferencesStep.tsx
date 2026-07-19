@@ -25,7 +25,7 @@ export function PreferencesStep({ onComplete }: PreferencesStepProps) {
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="flex flex-col items-center text-center space-y-8 w-full max-w-md"
+      className="flex w-full max-w-md flex-col items-center space-y-8 text-center"
     >
       <div className="space-y-2">
         <h2 className="text-3xl font-bold text-white">Preferences</h2>
@@ -35,7 +35,7 @@ export function PreferencesStep({ onComplete }: PreferencesStepProps) {
       <div className="w-full space-y-4" role="group" aria-label="Workspace preferences">
         <PreferenceOption
           id="autoStack"
-          icon={<Zap className="w-5 h-5 text-yellow-400" aria-hidden="true" />}
+          icon={<Zap className="h-5 w-5 text-yellow-400" aria-hidden="true" />}
           label="Auto-Stack Widgets"
           description="Automatically group related voice commands."
           active={preferences.autoStack}
@@ -43,7 +43,7 @@ export function PreferencesStep({ onComplete }: PreferencesStepProps) {
         />
         <PreferenceOption
           id="notifications"
-          icon={<Bell className="w-5 h-5 text-red-400" aria-hidden="true" />}
+          icon={<Bell className="h-5 w-5 text-red-400" aria-hidden="true" />}
           label="Smart Notifications"
           description="Get alerted when tasks are due."
           active={preferences.notifications}
@@ -51,7 +51,7 @@ export function PreferencesStep({ onComplete }: PreferencesStepProps) {
         />
         <PreferenceOption
           id="highContrast"
-          icon={<Monitor className="w-5 h-5 text-green-400" aria-hidden="true" />}
+          icon={<Monitor className="h-5 w-5 text-green-400" aria-hidden="true" />}
           label="High Contrast Mode"
           description="Increase visibility for outdoor usage."
           active={preferences.highContrast}
@@ -61,7 +61,7 @@ export function PreferencesStep({ onComplete }: PreferencesStepProps) {
 
       <button
         onClick={onComplete}
-        className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all active:scale-95"
+        className="bg-brand-strong hover:bg-brand w-full rounded-xl py-4 font-bold text-white transition-all active:scale-95"
       >
         Finish Setup
       </button>
@@ -98,11 +98,11 @@ function PreferenceOption({
         }
       }}
       className={cn(
-        "flex items-center gap-4 p-4 rounded-xl border border-white/5 cursor-pointer transition-all",
-        active ? "bg-white/10 border-blue-500/50" : "bg-black hover:bg-white/5",
+        "flex cursor-pointer items-center gap-4 rounded-xl border border-white/5 p-4 transition-all",
+        active ? "border-brand/50 bg-white/10" : "bg-black hover:bg-white/5",
       )}
     >
-      <div className="p-3 bg-white/5 rounded-lg">{icon}</div>
+      <div className="rounded-lg bg-white/5 p-3">{icon}</div>
       <div className="flex-1 text-left">
         <h3 className="font-semibold text-white" id={`pref-${id}`}>
           {label}
@@ -111,12 +111,12 @@ function PreferenceOption({
       </div>
       <div
         className={cn(
-          "w-6 h-6 rounded-full border flex items-center justify-center transition-colors",
-          active ? "bg-blue-500 border-blue-500" : "border-zinc-700",
+          "flex h-6 w-6 items-center justify-center rounded-full border transition-colors",
+          active ? "bg-brand border-brand" : "border-zinc-700",
         )}
         aria-hidden="true"
       >
-        {active && <Check className="w-4 h-4 text-white" />}
+        {active && <Check className="h-4 w-4 text-white" />}
       </div>
     </div>
   );

@@ -31,9 +31,9 @@ export function HeroSection({ onStart }: HeroSectionProps) {
   const [showHowItWorks, setShowHowItWorks] = useState(false);
 
   return (
-    <section className="relative flex flex-col items-center justify-center min-h-screen px-4 py-20 overflow-hidden text-center -mt-20 sm:mt-0">
+    <section className="relative -mt-20 flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 py-20 text-center sm:mt-0">
       <div
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-blue-900/20 blur-[120px] rounded-full pointer-events-none"
+        className="bg-brand/10 pointer-events-none absolute top-0 left-1/2 h-[500px] w-[1000px] -translate-x-1/2 rounded-full blur-[120px]"
         aria-hidden="true"
       />
 
@@ -47,7 +47,7 @@ export function HeroSection({ onStart }: HeroSectionProps) {
 
         <h1 className="text-5xl font-bold tracking-tight text-white sm:text-7xl">
           Speak it.{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+          <span className="from-brand to-brand-strong bg-gradient-to-r bg-clip-text text-transparent">
             Make it.
           </span>
         </h1>
@@ -59,9 +59,9 @@ export function HeroSection({ onStart }: HeroSectionProps) {
         <div className="flex flex-col gap-4 sm:flex-row">
           <button
             onClick={onStart}
-            className="group relative flex items-center justify-center gap-2 px-8 py-4 text-white bg-blue-600 rounded-full shadow-lg shadow-blue-900/40 hover:bg-blue-500 transition-all hover:scale-105 active:scale-95"
+            className="group bg-brand-strong shadow-brand/40 hover:bg-brand relative flex items-center justify-center gap-2 rounded-full px-8 py-4 text-white shadow-lg transition-all hover:scale-105 active:scale-95"
           >
-            <Mic className="w-5 h-5 group-hover:animate-pulse" aria-hidden="true" />
+            <Mic className="h-5 w-5 group-hover:animate-pulse" aria-hidden="true" />
             <span className="font-semibold">Start Speaking</span>
           </button>
 
@@ -69,13 +69,13 @@ export function HeroSection({ onStart }: HeroSectionProps) {
             onClick={() => setShowHowItWorks((v) => !v)}
             aria-expanded={showHowItWorks}
             aria-controls="how-it-works"
-            className="flex items-center justify-center gap-2 px-8 py-4 text-zinc-300 transition-colors rounded-full hover:text-white hover:bg-white/5 border border-white/10 backdrop-blur-sm"
+            className="flex items-center justify-center gap-2 rounded-full border border-white/10 px-8 py-4 text-zinc-300 backdrop-blur-sm transition-colors hover:bg-white/5 hover:text-white"
           >
             <span>How it works</span>
             {showHowItWorks ? (
-              <ChevronUp className="w-4 h-4" aria-hidden="true" />
+              <ChevronUp className="h-4 w-4" aria-hidden="true" />
             ) : (
-              <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             )}
           </button>
         </div>
@@ -97,10 +97,10 @@ export function HeroSection({ onStart }: HeroSectionProps) {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 + i * 0.08 }}
-                    className="flex flex-col items-center gap-3 p-5 text-center border rounded-2xl border-white/10 bg-white/[0.03] backdrop-blur-sm"
+                    className="flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-center backdrop-blur-sm"
                   >
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-500/10 text-blue-400">
-                      <Icon className="w-5 h-5" aria-hidden="true" />
+                    <div className="bg-brand/10 text-brand flex h-10 w-10 items-center justify-center rounded-full">
+                      <Icon className="h-5 w-5" aria-hidden="true" />
                     </div>
                     <h3 className="text-sm font-semibold text-white">
                       <span className="mr-1.5 text-zinc-500">{i + 1}.</span>
