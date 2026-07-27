@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Speak it. Make it.">
+  <!-- Rahul Mark System v2 — orange-700 field #c2410c / paper glyph, 5.2:1
+       Say it and it gets built: four bars of a spoken waveform, rising toward
+       the thing you asked for. Replaces a letter "S" rendered in a box, which
+       said nothing about the product and matched no other mark in the family. -->
+  <rect width="512" height="512" rx="114" fill="#c2410c"/>
+  <svg x="84" y="84" width="344" height="344" viewBox="0 0 24 24">
+    <g fill="#fbf7f0">
+      <rect x="1.6" y="9" width="3.8" height="6" rx="1.9"/>
+      <rect x="7.1" y="5.4" width="3.8" height="13.2" rx="1.9"/>
+      <rect x="12.6" y="1.6" width="3.8" height="20.8" rx="1.9"/>
+      <rect x="18.1" y="7.2" width="3.8" height="9.6" rx="1.9"/>
+    </g>
+  </svg>
+</svg>
